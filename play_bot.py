@@ -3,15 +3,6 @@ from game_data import init_game, prizes_table, consolation_prize
 import logging
 import urllib
 
-# Enable logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
-
-logger = logging.getLogger(__name__)
-
-games = dict()
-winners = dict()
-
 def start(bot, update):
     if not get_user_id(update) in games:
         games[get_user_id(update)] = init_game()
@@ -94,5 +85,13 @@ def main():
     updater.start_polling()
     updater.idle()
 
+def create_logger():
+    log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    logging.basicConfig(format=log_format, level=logging.INFO)
+    return logging.getLogger(__name__)
+
 if __name__ == '__main__':
+    logger = create_logger()
+    games = dict()
+    winners = dict()
     main()
