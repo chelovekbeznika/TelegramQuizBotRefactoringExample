@@ -72,18 +72,26 @@ def error(bot, update, error):
     logger.warn('Update "%s" caused error "%s"' % (update, error))
 
 def main():
+    updater = create_bot()
+    tune_bot(updater)
+    start_bot(updater)
+
+def create_bot():
     with open('BotToken.txt', 'r') as key_file:
         telegram_bot_api_key = key_file.read()
-    updater = Updater(telegram_bot_api_key)
+    return Updater(telegram_bot_api_key)
+
+def tune_bot(updater):
     dp = updater.dispatcher
     dp.add_handler(CommandHandler('start', start))
     dp.add_handler(CommandHandler('rules', rules))
     dp.add_handler(CommandHandler('task', task))
     dp.add_handler(MessageHandler(Filters.text, process_answer))
     dp.add_error_handler(error)
-    
+
+def start_bot(updater):
     updater.start_polling()
-    updater.idle()
+    updater.idle()    
 
 def create_logger():
     log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
