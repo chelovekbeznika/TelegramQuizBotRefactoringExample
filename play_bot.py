@@ -81,7 +81,7 @@ def error(bot, update, error):
     logger.warn('Update "%s" caused error "%s"' % (update, error))
 
 def main():
-    with open('BotToken', 'r') as key_file:
+    with open('BotToken.txt', 'r') as key_file:
         telegram_bot_api_key = key_file.read()
     updater = Updater(telegram_bot_api_key)
     dp = updater.dispatcher
