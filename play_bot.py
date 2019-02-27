@@ -25,18 +25,12 @@ def start_bot(updater):
     updater.start_polling()
     updater.idle()
 
-def handle_start_command(bot, update):
-    if not get_user_id(update) in games:
-        games[get_user_id(update)] = init_game()
-    handle_rules_command(bot, update)
-    handle_task_command(bot, update)
-
 def user_update_handler(handler):
     """
-    Декоратор с общим поведением. Гарантирует перед выполнением handler следующее:
-    1) Игра уже запущена
-    2) Игра еще не закончена
-    Все, что не соответствует данному инварианту обрабатывается прямо тут функцией
+    Command handler decorator. Gives next guarantees before handler execution:
+    1) game started
+    2) game not ended yet
+    Otherwise handler is not executed, we are start game or give prize again.
     """
     def common_handler(bot, update):
         user_id = get_user_id(update)
@@ -50,6 +44,13 @@ def user_update_handler(handler):
             handle_start_command(bot, update)
             
     return common_handler
+
+def handle_start_command(bot, update):
+    user_id = get_user_id(update)
+    if not user_id in games:
+        games[user_id] = init_game()
+    handle_rules_command(bot, update)
+    handle_task_command(bot, update)
 
 @user_update_handler
 def handle_rules_command(bot, update):
