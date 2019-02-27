@@ -1,5 +1,5 @@
 __all__ = ['get_prizes_table', 'get_consolation_prize', 'init_game']
-from model import Game, Task, Answer
+from model import Game, Question, Answer
 
 def get_prizes_table():
     return prizes_table
@@ -8,7 +8,7 @@ def get_consolation_prize():
     return consolation_prize
 
 def init_game():
-    return Game(rules, tasks)
+    return Game(rules, questions)
 
 rules = """
 Узнай BattleMC по его цитате. Ответ - ник, под которым он выступает на баттлах. Большие - маленькие буквы, похуй.
@@ -27,8 +27,8 @@ last_wrong_reactions = wrong_reactions + [
 
 antihype = 'Е-е-е-е, антихайп, ебал вас всех в рот. Но ответ неправильный.'
 
-tasks = [
-    Task('Easy, easy, real talk, think about it.',
+questions = [
+    Question('Easy, easy, real talk, think about it.',
          [Answer('Oxxxymiron', 'Молодец, аккуратно все написал'),
           Answer('Оксимирон', 'Вообще, Oxxxymiron, но хуй с тобой, засчитано.')],
          [Answer('Мирон', 'Не, ну че ты жида не уважаешь? Напиши правильно!'),
@@ -40,11 +40,11 @@ tasks = [
           Answer('Замай', antihype),
           Answer('Fallen mc', antihype)],
          wrong_reactions),
-    Task('Главное - оставаться людьми',
+    Question('Главное - оставаться людьми',
          [Answer('Пиэм', 'На баттле с Паровозом и Майком')],
          [],
          wrong_reactions),
-    Task('Этот пиздец моралфагам надолго запомнится.',
+    Question('Этот пиздец моралфагам надолго запомнится.',
          [Answer('Deep-ex-sense', 'Он самый, баттл с Диз-вилсом.'),
           Answer('Wahabeat', 'Так-то ответ правильный, но он бы на тебя обиделся.')],
          [Answer('Rickey f','Его пиздец моралфагам надолго запомнился, да. Цитата принадлежит другому ЭмСи.'),

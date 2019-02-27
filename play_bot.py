@@ -59,9 +59,9 @@ def handle_rules_command(bot, update):
 @user_update_handler
 def handle_task_command(bot, update):
     game = games[get_user_id(update)]
-    question_intro = 'Задание #{0}:'.format(game.task_number + 1)
+    question_intro = 'Задание #{0}:'.format(game.question_number + 1)
     reply(update.message, question_intro)
-    reply(update.message, game.tell_objective())
+    reply(update.message, game.tell_question())
 
 @user_update_handler
 def process_answer(bot, update):
@@ -74,7 +74,7 @@ def process_answer(bot, update):
         position = determine_position(user_id)
         prize = form_prize(position)
         reply(update.message, prize)
-    if not game.completed() and not game.objective_told:
+    if not game.completed() and not game.question_told:
         handle_task_command(bot, update)
 
 def reply(message, text):

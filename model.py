@@ -1,41 +1,41 @@
 import random
 
 class Game:
-    def __init__(self, rules, tasks):
-        self.task_number = 0
+    def __init__(self, rules, questions):
+        self.question_number = 0
         self.rules = rules
-        self.tasks = tasks
+        self.questions = questions
         self.objective_told = False
 
     def tell_rules(self):
         return self.rules
 
-    def tell_objective(self):
-        self.objective_told = True
-        return self.current_task.tell_objective()
+    def tell_question(self):
+        self.question_told = True
+        return self.current_question.tell_question()
 
     def check_answer(self, value):
-        result, reaction = self.current_task.check_answer(value)
+        result, reaction = self.current_question.check_answer(value)
         if result:
             self.objective_told = False
-            self.task_number += 1
+            self.question_number += 1
         return reaction
 
     def completed(self):
-        return self.task_number >= len(self.tasks)
+        return self.question_number >= len(self.questions)
 
     @property
-    def current_task(self):
-        return self.tasks[self.task_number]
+    def current_question(self):
+        return self.questions[self.question_number]
 
-class Task:
+class Question:
     def __init__(self, objective, right_answers, close_answers, wrong_reactions):
         self.objective = objective
         self.right_answers = right_answers
         self.close_answers = close_answers
         self.wrong_reactions = wrong_reactions
 
-    def tell_objective(self):
+    def tell_question(self):
         return self.objective
 
     def check_answer(self, value):
