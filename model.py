@@ -1,3 +1,4 @@
+__all__ = ['Game', 'Question', 'Answer']
 import random
 
 class Game:
