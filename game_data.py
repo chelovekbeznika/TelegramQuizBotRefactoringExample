@@ -1,4 +1,14 @@
+__all__ = ['get_prizes_table', 'get_consolation_prize', 'init_game']
 from model import Game, Task, Answer
+
+def get_prizes_table():
+    return prizes_table
+
+def get_consolation_prize():
+    return consolation_prize
+
+def init_game():
+    return Game(rules, tasks)
 
 rules = """
 Узнай BattleMC по его цитате. Ответ - ник, под которым он выступает на баттлах. Большие - маленькие буквы, похуй.
@@ -41,9 +51,6 @@ tasks = [
           Answer('ХХОС', 'Ну, был у него баттл с автором цитаты, но нет.'),
           Answer('Хип-хоп одинокой старухи', 'И не лень же было писать полностью. Но нет, не он.')],
          last_wrong_reactions)]
-
-def init_game():
-    return Game(rules, tasks)
 
 first_prize = "Первое место!"
 second_prize = "Второе место!"

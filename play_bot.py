@@ -1,5 +1,5 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from game_data import init_game, prizes_table, consolation_prize
+from game_data import init_game, get_prizes_table, get_consolation_prize
 import logging
 import urllib
 
@@ -89,9 +89,11 @@ def determine_position(user_id):
     return winners[user_id]    
 
 def form_prize(position):
+    prizes_table = get_prizes_table()
     if position in prizes_table:
         return prizes_table[position]
     else:
+        consolation_prize = get_consolation_prize()
         return consolation_prize
 
 def handle_error(bot, update, error):
