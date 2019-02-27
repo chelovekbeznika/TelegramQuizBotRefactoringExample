@@ -15,47 +15,23 @@ def create_bot():
 
 def tune_bot(updater):
     dp = updater.dispatcher
-    dp.add_handler(CommandHandler('start', start))
-    dp.add_handler(CommandHandler('rules', rules))
-    dp.add_handler(CommandHandler('task', task))
+    dp.add_handler(CommandHandler('start', handle_start_command))
+    dp.add_handler(CommandHandler('rules', handle_rules_command))
+    dp.add_handler(CommandHandler('task', handle_task_command))
     dp.add_handler(MessageHandler(Filters.text, process_answer))
-    dp.add_error_handler(error)
+    dp.add_error_handler(handle_error)
 
 def start_bot(updater):
     updater.start_polling()
     updater.idle()
 
-def start(bot, update):
+def handle_start_command(bot, update):
     if not get_user_id(update) in games:
         games[get_user_id(update)] = init_game()
-    rules(bot, update)
-    task(bot, update)
+    handle_rules_command(bot, update)
+    handle_task_command(bot, update)
 
-@common_behavior
-def rules(bot, update):
-    game = games[get_user_id(update)]
-    reply(update.message, game.tell_rules())
-
-@common_behavior
-def task(bot, update):
-    game = games[get_user_id(update)]
-    question_intro = 'Задание #{0}:'.format(game.task_number + 1)
-    reply(update.message, question_intro)
-    reply(update.message, game.tell_objective())
-
-@common_behavior
-def process_answer(bot, update):
-    user_id = get_user_id(update)
-    game = games[user_id]
-    value = update.message.text.strip()
-    reaction = game.check_answer(value)
-    reply(update.message, reaction)
-    if game.completed():
-        reply(update.message, form_prize(user_id))
-    if not game.completed() and not game.objective_told:
-        task(bot, update)
-
-def common_behavior(handler):
+def user_update_handler(handler):
     """
     Декоратор с общим поведением. Гарантирует перед выполнением handler следующее:
     1) Игра уже запущена
@@ -71,9 +47,35 @@ def common_behavior(handler):
                 reply(update.message, 'Успокойся, ты уже выиграл! Вот приз:')
                 reply(update.message, form_prize(user_id))
         else:
-            start(bot, update)
+            handle_start_command(bot, update)
             
     return common_handler
+
+@user_update_handler
+def handle_rules_command(bot, update):
+    game = games[get_user_id(update)]
+    reply(update.message, game.tell_rules())
+
+@user_update_handler
+def handle_task_command(bot, update):
+    game = games[get_user_id(update)]
+    question_intro = 'Задание #{0}:'.format(game.task_number + 1)
+    reply(update.message, question_intro)
+    reply(update.message, game.tell_objective())
+
+@user_update_handler
+def process_answer(bot, update):
+    user_id = get_user_id(update)
+    game = games[user_id]
+    value = update.message.text.strip()
+    reaction = game.check_answer(value)
+    reply(update.message, reaction)
+    if game.completed():
+        position = determine_position(user_id)
+        prize = form_prize(position)
+        reply(update.message, prize)
+    if not game.completed() and not game.objective_told:
+        handle_task_command(bot, update)
 
 def reply(message, text):
     message.reply_text(text)
@@ -81,16 +83,18 @@ def reply(message, text):
 def get_user_id(update):
     return update.message.from_user.id
 
-def form_prize(user_id):
+def determine_position(user_id):
     if not user_id in winners:
         winners[user_id] = len(winners) + 1
-    place = winners[user_id]
-    if place in prizes_table:
-        return prizes_table[place]
+    return winners[user_id]    
+
+def form_prize(position):
+    if position in prizes_table:
+        return prizes_table[position]
     else:
         return consolation_prize
 
-def error(bot, update, error):
+def handle_error(bot, update, error):
     logger.warn('Update "%s" caused error "%s"' % (update, error))
 
 def create_logger():
