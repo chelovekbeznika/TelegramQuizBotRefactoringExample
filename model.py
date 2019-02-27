@@ -14,7 +14,11 @@ class Game:
     def tell_question(self):
         self.question_told = True
         return self.current_question.tell_question()
-
+    
+    @property
+    def current_question(self):
+        return self.questions[self.question_number]
+    
     def check_answer(self, value):
         result, reaction = self.current_question.check_answer(value)
         if result:
@@ -24,10 +28,6 @@ class Game:
 
     def completed(self):
         return self.question_number >= len(self.questions)
-
-    @property
-    def current_question(self):
-        return self.questions[self.question_number]
 
 class Question:
     def __init__(self, objective, right_answers, close_answers, wrong_reactions):
