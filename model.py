@@ -17,7 +17,7 @@ class Game:
     def check_answer(self, value):
         result, reaction = self.current_question.check_answer(value)
         if result:
-            self.objective_told = False
+            self.question_told = False
             self.question_number += 1
         return reaction
 
